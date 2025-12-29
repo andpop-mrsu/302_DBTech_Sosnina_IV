@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS movies;
 CREATE TABLE movies (
     id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
-    year INTEGER DEFAULT NULL CHECK (year IS NULL OR year >= 1880)
+    year INTEGER
 );
 
 
@@ -23,8 +23,8 @@ CREATE TABLE movie_genres (
     movie_id INTEGER,
     genre_id INTEGER,
     PRIMARY KEY(movie_id, genre_id),
-    FOREIGN KEY(movie_id) REFERENCES movies(id) ON DELETE RESTRICT,
-    FOREIGN KEY(genre_id) REFERENCES genres(id) ON DELETE CASCADE
+    FOREIGN KEY(movie_id) REFERENCES movies(id),
+    FOREIGN KEY(genre_id) REFERENCES genres(id)
 );
 
 
@@ -36,40 +36,35 @@ CREATE TABLE occupations (
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    gender TEXT CHECK (gender IN ('male','female')),
-    register_date TEXT DEFAULT (date('now')),
+    name TEXT,
+    email TEXT,
+    gender TEXT,
+    register_date TEXT,
     occupation_id INTEGER,
-    FOREIGN KEY(occupation_id) REFERENCES occupations(id) ON DELETE SET NULL
+    FOREIGN KEY(occupation_id) REFERENCES occupations(id)
 );
 
 
 CREATE TABLE ratings (
     id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    movie_id INTEGER NOT NULL,
-    rating REAL NOT NULL DEFAULT 0 CHECK (rating >= 0 AND rating <= 5),
-    timestamp INTEGER DEFAULT (strftime('%s','now')),
-    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY(movie_id) REFERENCES movies(id) ON DELETE RESTRICT
+    user_id INTEGER,
+    movie_id INTEGER,
+    rating REAL,
+    timestamp INTEGER,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(movie_id) REFERENCES movies(id)
 );
 
 
 CREATE TABLE tags (
     id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    movie_id INTEGER NOT NULL,
-    tag TEXT NOT NULL,
-    timestamp INTEGER DEFAULT (strftime('%s','now')),
-    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY(movie_id) REFERENCES movies(id) ON DELETE RESTRICT
+    user_id INTEGER,
+    movie_id INTEGER,
+    tag TEXT,
+    timestamp INTEGER,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(movie_id) REFERENCES movies(id)
 );
-
-
-CREATE INDEX idx_users_name ON users(name);
-CREATE INDEX idx_movies_title ON movies(title);
-CREATE INDEX idx_movies_year ON movies(year);
 
 INSERT INTO occupations VALUES (1, 'technician');
 INSERT INTO users VALUES (1, 'Devonte Stamm', 'marianne.krajcik@bartoletti.com', 'male', '2010-09-19', 1);
